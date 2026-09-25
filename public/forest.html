@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ForestVol</title>
+    <link rel="icon" href="ForestVolume.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="Image/ForestVolume.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="Image/ForestVolume.png" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            overflow-x: auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .left {
+            flex: 0 0 76%;
+        }
+
+        .right {
+            flex: 0 0 20%;
+            position: relative;
+            padding-bottom: 60px;
+        }
+
+        .table-wrapper {
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid black;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 16px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 4px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #volumeBodyTable td {
+            padding: 2px 4px;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f0f0f0;
+            z-index: 2;
+        }
+
+        tfoot td {
+            position: sticky;
+            bottom: 0;
+            background-color: aquamarine;
+            z-index: 1;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        thead th, tfoot td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 6px;
+        }
+
+        .scrollable-body {
+            overflow-y: auto;
+            flex-grow: 1;
+            scroll-padding-bottom: 40px;
+            padding-bottom: 40px;
+        }
+
+        label {
+            font-size: 20px;
+            margin-top: 12px;
+            display: block;
+        }
+
+        button {
+            font-size: 18px;
+            padding: 14px 12px;
+            width: 100%;
+            margin-top: 12px;
+            box-sizing: border-box;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: darkgreen;
+            }
+
+        #volumeBodyTable td {
+            height: 44px; /* або інша бажана висота рядка */
+            padding: 0; /* прибираємо зайві відступи */
+        }
+
+        .delete-button {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto; /* центрування всередині клітинки */
+        }
+
+            .delete-button i {
+                font-size: 14px;
+            }
+
+            .delete-button:hover {
+                background-color: #c62828;
+            }
+
+
+        /* Кастомні селекти */
+        .custom-select {
+            position: relative;
+            font-size: 24px;
+            user-select: none;
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .select-selected {
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 14px 12px;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .select-selected:after {
+                content: "\25BC";
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+
+        .select-items {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-top: none;
+            width: 100%;
+            z-index: 99;
+            max-height: 57vh;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+            .select-items div {
+                padding: 14px 12px;
+                cursor: pointer;
+                font-size: 24px;
+            }
+
+                .select-items div:hover {
+                    background-color: #f1f1f1;
+                }
+
+        .select-hide {
+            display: none;
+        }
+
+        #exportExcelBtn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%; /* Щоб була така сама ширина, як кнопка 'Зберегти' */
+            background-color: #007ACC;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 50px;
+        }
+
+        #clearStorageBtn {
+            position: relative;
+            background-color: red; /* Червоний фон */
+            color: white; /* (додатково) білий текст, для контрасту */
+            padding: 4px 8px; /* (додатково) відступи для гарнішого вигляду */
+            border: none; /* (додатково) прибрати рамку */
+            border-radius: 5px; /* (додатково) згладжені кути */
+            cursor: pointer;
+            height: 55px;
+            width: 100%;
+        }
+
+        .length-4 {
+            background-color: yellow;
+        }
+
+        .length-5 {
+            background-color: lightblue;
+        }
+
+        .length-6 {
+            background-color: lightgreen;
+        }
+
+        .row-number {
+            font-weight: bold; /* жирний текст */
+            color: #007bff; /* синій колір тексту */
+            background-color: #e0f0ff; /* світло-блакитний фон */
+            padding: 4px 8px; /* відступи */
+            /*border-radius: 4px;*/ /* закруглення */
+        }
+
+        /* Відсоткові ширини колонок */
+        .col-10 {
+            width: 10%;
+        }
+
+        .col-15 {
+            width: 15%;
+        }
+
+        .col-20 {
+            width: 20%;
+        }
+
+        .col-25 {
+            width: 25%;
+        }
+
+        .col-30 {
+            width: 30%;
+        }
+
+        .down {
+            display: flex;
+            flex-direction: column;
+            height: 40%; /* або auto, якщо батьківський блок тягнеться */
+        }
+
+        .spacer {
+            flex-grow: 1;
+        }
+
+        #lengthSummary {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-10">№</th>
+                            <th class="col-20">L, m</th>
+                            <th class="col-25">
+                                <span style="font-size: 20px;">&oslash;</span><span style="font-size: 16px;">, сm</span>
+                            </th>
+                            <th class="col-30">V, куб</th>
+                            <th class="col-15"></th>
+                        </tr>
+                    </thead>
+                </table>
+                <div class="scrollable-body">
+                    <table id="volumeBodyTable">
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <table>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">V: <span id="totalVolume">0</span></td>
+                            <td colspan="2">Шт: <span id="totalCount">0</span></td>
+                        </tr>
+                        <tr id="row_6" style="display: none;">
+                            <td colspan="2">6m:</td>
+                            <td><span id="volume_6">0</span></td>
+                            <td>Шт: <span id="count_6">0</span></td>
+                        </tr>
+                        <tr id="row_5" style="display: none;">
+                            <td colspan="2">5m:</td>
+                            <td><span id="volume_5">0</span></td>
+                            <td>Шт: <span id="count_5">0</span></td>
+                        </tr>
+                        <tr id="row_4" style="display: none;">
+                            <td colspan="2">4m:</td>
+                            <td><span id="volume_4">0</span></td>
+                            <td>Шт: <span id="count_4">0</span></td>
+                        </tr>
+                        <tr id="row_3" style="display: none;">
+                            <td colspan="2">3m:</td>
+                            <td><span id="volume_3">0</span></td>
+                            <td>Шт: <span id="count_3">0</span></td>
+                        </tr>
+
+                    </tfoot>
+                </table>
+                <button id="toggleLengthBtn" onclick="toggleLengthSummary()">По довжинах</button>
+            </div>
+        </div>
+
+        <div class="right">
+
+            <div class="up">
+                <label>Довжина:</label>
+                <div class="custom-select" id="length-custom">
+                    <div class="select-selected">6</div>
+                    <div class="select-items select-hide">
+                        <div data-value="3">3</div>
+                        <div data-value="4">4</div>
+                        <div data-value="5">5</div>
+                        <div data-value="6">6</div>
+                    </div>
+                </div>
+
+                <label>Діаметр:</label>
+                <div class="custom-select" id="diameter-custom">
+                    <div class="select-selected">16</div>
+                    <div class="select-items select-hide"></div>
+                </div>
+            </div>
+
+            <div class="down">
+                <button onclick="saveEntry()">Додати</button>
+                <div class="spacer"></div>
+                <button id="clearStorageBtn">Очист.</button>
+                <!--<div class="spacer"></div>-->
+                <!--<a href="indexpro.html">Перейти на про</a>
+                Кнопка для збереження Excel-->
+                <button id="exportExcelBtn">Excel</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Підключення SheetJS -->
+    <!--<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.min.js"></script>
+    <script src="Sources/exportAndroid.js"></script>
+
+    <script>
+        // Ваш код для custom-select і saveEntry (без змін)
+        // ------------------------------------------------
+        const volumeLookup = {
+            "3-16": 0.069, "4-16": 0.095, "5-16": 0.124, "6-16": 0.155,
+            "3-17": 0.077, "4-17": 0.1075, "5-17": 0.14, "6-17": 0.1745,
+            "3-18": 0.086, "4-18": 0.12, "5-18": 0.156, "6-18": 0.194,
+            "3-19": 0.097, "4-19": 0.1335, "5-19": 0.173, "6-19": 0.212,
+            "3-20": 0.107, "4-20": 0.147, "5-20": 0.19, "6-20": 0.23,
+            "3-21": 0.119, "4-21": 0.1625, "5-21": 0.21, "6-21": 0.255,
+            "3-22": 0.13, "4-22": 0.178, "5-22": 0.23, "6-22": 0.28,
+            "3-23": 0.144, "4-23": 0.194, "5-23": 0.25, "6-23": 0.305,
+            "3-24": 0.157, "4-24": 0.21, "5-24": 0.27, "6-24": 0.33,
+            "3-25": 0.171, "4-25": 0.23, "5-25": 0.295, "6-25": 0.36,
+            "3-26": 0.185, "4-26": 0.25, "5-26": 0.32, "6-26": 0.39,
+            "3-27": 0.203, "4-27": 0.27, "5-27": 0.345, "6-27": 0.42,
+            "3-28": 0.22, "4-28": 0.29, "5-28": 0.37, "6-28": 0.45,
+            "3-29": 0.235, "4-29": 0.31, "5-29": 0.395, "6-29": 0.485,
+            "3-30": 0.25, "4-30": 0.33, "5-30": 0.42, "6-30": 0.52,
+            "3-31": 0.265, "4-31": 0.355, "5-31": 0.45, "6-31": 0.555,
+            "3-32": 0.28, "4-32": 0.38, "5-32": 0.48, "6-32": 0.59,
+            "3-33": 0.3, "4-33": 0.405, "5-33": 0.51, "6-33": 0.625,
+            "3-34": 0.32, "4-34": 0.43, "5-34": 0.54, "6-34": 0.66,
+            "3-35": 0.34, "4-35": 0.455, "5-35": 0.57, "6-35": 0.7,
+            "3-36": 0.36, "4-36": 0.48, "5-36": 0.6, "6-36": 0.74,
+            "3-37": 0.375, "4-37": 0.505, "5-37": 0.635, "6-37": 0.78,
+            "3-38": 0.39, "4-38": 0.53, "5-38": 0.67, "6-38": 0.82,
+            "3-39": 0.41, "4-39": 0.555, "5-39": 0.705, "6-39": 0.86,
+            "3-40": 0.43, "4-40": 0.58, "5-40": 0.74, "6-40": 0.9,
+            "3-41": 0.45, "4-41": 0.61, "5-41": 0.775, "6-41": 0.95,
+            "3-42": 0.47, "4-42": 0.64, "5-42": 0.81, "6-42": 1.0,
+            "3-43": 0.495, "4-43": 0.67, "5-43": 0.85, "6-43": 1.045,
+            "3-44": 0.515, "4-44": 0.7, "5-44": 0.89, "6-44": 1.09,
+            "3-45": 0.543, "4-45": 0.735, "5-45": 0.935, "6-45": 1.14,
+            "3-46": 0.57, "4-46": 0.77, "5-46": 0.98, "6-46": 1.19,
+            "3-47": 0.595, "4-47": 0.805, "5-47": 1.02, "6-47": 1.245,
+            "3-48": 0.62, "4-48": 0.84, "5-48": 1.06, "6-48": 1.3,
+            "3-49": 0.645, "4-49": 0.875, "5-49": 1.105, "6-49": 1.355,
+            "3-50": 0.67, "4-50": 0.91, "5-50": 1.15, "6-50": 1.41,
+            "3-51": 0.7, "4-51": 0.95, "5-51": 1.2, "6-51": 1.47,
+            "3-52": 0.73, "4-52": 0.99, "5-52": 1.25, "6-52": 1.53,
+            "3-53": 0.765, "4-53": 1.03, "5-53": 1.3, "6-53": 1.59,
+            "3-54": 0.8, "4-54": 1.07, "5-54": 1.35, "6-54": 1.65,
+            "3-55": 0.83, "4-55": 1.115, "5-55": 1.405, "6-55": 1.715,
+            "3-56": 0.86, "4-56": 1.16, "5-56": 1.46, "6-56": 1.78,
+            "3-57": 0.89, "4-57": 1.205, "5-57": 1.515, "6-57": 1.845,
+            "3-58": 0.92, "4-58": 1.25, "5-58": 1.57, "6-58": 1.91,
+            "3-59": 0.955, "4-59": 1.29, "5-59": 1.625, "6-59": 1.98,
+            "3-60": 0.99, "4-60": 1.33, "5-60": 1.68, "6-60": 2.05
+        };
+
+        const countsByLength = { 3: 0, 4: 0, 5: 0, 6: 0 };
+        const volumesByLength = { 3: 0, 4: 0, 5: 0, 6: 0 };
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // custom-select setup, як у вас (скорочено)
+            // ------------------------------------------------
+            function setupCustomSelect(customSelectId, valuesArray, defaultValue, onChange) {
+                const customSelect = document.getElementById(customSelectId);
+                const selected = customSelect.querySelector('.select-selected');
+                const itemsContainer = customSelect.querySelector('.select-items');
+
+                itemsContainer.innerHTML = '';
+                valuesArray.forEach(val => {
+                    const div = document.createElement('div');
+                    div.textContent = val;
+                    div.dataset.value = val;
+                    itemsContainer.appendChild(div);
+                });
+
+                selected.textContent = defaultValue;
+
+                selected.addEventListener('click', () => {
+                    closeAllCustomSelects(customSelect);
+                    itemsContainer.classList.toggle('select-hide');
+                    selected.classList.toggle('active');
+                });
+
+                itemsContainer.querySelectorAll('div').forEach(option => {
+                    option.addEventListener('click', () => {
+                        selected.textContent = option.textContent;
+                        itemsContainer.classList.add('select-hide');
+                        selected.classList.remove('active');
+                        if (typeof onChange === 'function') onChange(option.dataset.value);
+                    });
+                });
+            }
+
+            function closeAllCustomSelects(exceptionSelect) {
+                document.querySelectorAll('.custom-select').forEach(cs => {
+                    if (cs !== exceptionSelect) {
+                        cs.querySelector('.select-items')?.classList.add('select-hide');
+                        cs.querySelector('.select-selected')?.classList.remove('active');
+                    }
+                });
+            }
+
+            document.addEventListener('click', (e) => {
+                if (![...document.querySelectorAll('.custom-select')].some(cs => cs.contains(e.target))) {
+                    closeAllCustomSelects(null);
+                }
+            });
+
+            const diameters = [];
+            for (let d = 16; d <= 60; d++) diameters.push(d.toString());
+
+            let selectedLength = "6";
+            let selectedDiameter = "16";
+            let count = 0;
+
+            setupCustomSelect('length-custom', ["3", "4", "5", "6"], selectedLength, (val) => {
+                selectedLength = val;
+                document.getElementById("tikSound").play();
+            });
+
+            setupCustomSelect('diameter-custom', diameters, selectedDiameter, (val) => {
+                selectedDiameter = val;
+                document.getElementById("tikSound").play();
+            });
+
+            window.saveEntry = function () {
+                count++;
+                const key = `${selectedLength}-${selectedDiameter}`;
+                const volume = volumeLookup[key];
+                if (volume !== undefined) {
+                    const tableBody = document.querySelector("#volumeBodyTable tbody");
+                    const newRow = tableBody.insertRow();
+                    newRow.innerHTML = `
+                                            <td class="row-number" class="col-10">${count}</td>
+                                            <td class="col-20">${selectedLength}</td>
+                                            <td class="col-25">${selectedDiameter}</td>
+                                            <td class="col-30">${volume.toFixed(3)}</td>
+                                            <td class="col-15">
+                                               <button class="delete-button" onclick="deleteEntry(this, ${volume}, ${selectedLength})" title="Видалити">
+                                                  <i class="fas fa-trash"></i>
+                                               </button>
+                                            </td>`;
+                    if (selectedLength == 3) {
+                        newRow.classList.add("length-3");
+                    } else if (selectedLength == 4) {
+                        newRow.classList.add("length-4");
+                    } else if (selectedLength == 5) {
+                        newRow.classList.add("length-5");
+                    } else if (selectedLength == 6) {
+                        newRow.classList.add("length-6");
+                    }
+
+                    updateRowNumbers();
+
+
+                    const totalField = document.getElementById("totalVolume");
+                    const currentTotal = parseFloat(totalField.textContent);
+                    totalField.textContent = (currentTotal + volume).toFixed(3);
+
+                    document.getElementById("totalCount").textContent = tableBody.rows.length;
+
+                    // Оновлення кількості та об’єму по довжинах
+                    countsByLength[parseInt(selectedLength)] += 1;
+                    volumesByLength[parseInt(selectedLength)] += volume;
+
+                    saveToLocalStorage();
+                    updateLengthTotals();
+
+
+                    document.querySelector('.scrollable-body').scrollTop =
+                        document.querySelector('.scrollable-body').scrollHeight;
+
+                    document.getElementById("BacketSound").play();
+                } else {
+                    alert("Значення не знайдено у таблиці.");
+                }
+            };
+
+            window.deleteEntry = function (button, volume, length) {
+                const row = button.closest('tr');
+                row.remove();
+                // Оновити лічильники
+                countsByLength[length] -= 1;
+                volumesByLength[length] -= volume;
+
+                saveToLocalStorage();
+                updateRowNumbers();
+
+                updateLengthTotals();
+
+                const totalField = document.getElementById("totalVolume");
+                const currentTotal = parseFloat(totalField.textContent);
+                totalField.textContent = (currentTotal - volume).toFixed(3);
+
+                const tableBody = document.querySelector("#volumeBodyTable tbody");
+                document.getElementById("totalCount").textContent = tableBody.rows.length;
+
+                document.getElementById("deleteSound").play();
+            };
+
+            function updateRowNumbers() {
+                const tableBody = document.querySelector("#volumeBodyTable tbody");
+                const rows = tableBody.rows;
+
+                for (let i = 0; i < rows.length; i++) {
+                    // Оновлюємо номер в першій клітинці кожного рядка
+                    rows[i].cells[0].textContent = i + 1;
+                }
+            }
+
+            // --- Функції для збереження та відновлення з localStorage ---
+            function saveToLocalStorage() {
+                const tableBody = document.querySelector("#volumeBodyTable tbody");
+                const data = [];
+
+                for (let row of tableBody.rows) {
+                    const rowData = {
+                        length: row.cells[1].textContent.trim(),
+                        diameter: row.cells[2].textContent.trim(),
+                        volume: row.cells[3].textContent.trim()
+                    };
+                    data.push(rowData);
+                }
+
+                const totalVolume = document.getElementById("totalVolume").textContent;
+                const totalCount = document.getElementById("totalCount").textContent;
+
+                localStorage.setItem("forestvol_table", JSON.stringify(data));
+                localStorage.setItem("forestvol_totalVolume", totalVolume);
+                localStorage.setItem("forestvol_totalCount", totalCount);
+
+                // ⬇ Додаємо збереження кількостей і об’ємів по довжинах
+                localStorage.setItem("forestvol_countsByLength", JSON.stringify(countsByLength));
+                localStorage.setItem("forestvol_volumesByLength", JSON.stringify(volumesByLength));
+            }
+
+            function loadFromLocalStorage() {
+                const data = JSON.parse(localStorage.getItem("forestvol_table") || "[]");
+
+                const tableBody = document.querySelector("#volumeBodyTable tbody");
+                tableBody.innerHTML = "";
+                count = 0;
+
+                let totalVolume = 0;
+
+                data.forEach(entry => {
+                    const volume = parseFloat(entry.volume);
+                    if (isNaN(volume)) return;
+
+                    count++;
+                    const newRow = tableBody.insertRow();
+
+                    newRow.innerHTML = `
+                            <td class="row-number" class="col-10">${count}</td>
+                            <td class="col-20">${entry.length}</td>
+                            <td class="col-25">${entry.diameter}</td>
+                            <td class="col-30">${volume.toFixed(3)}</td>
+                            <td class="col-15">
+                                <button class="delete-button" onclick="deleteEntry(this, ${volume}, ${entry.length})" title="Видалити">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>`;
+
+                    newRow.classList.add(`length-${entry.length}`);
+                    totalVolume += volume;
+                });
+
+                // ОНОВЛЮЄМО ПІДСУМКИ
+                document.getElementById("totalVolume").textContent = totalVolume.toFixed(3);
+                document.getElementById("totalCount").textContent = count.toString();
+
+                // ⬇ Відновлення об’єму і кількості по довжинах
+                const storedCounts = JSON.parse(localStorage.getItem("forestvol_countsByLength") || "{}");
+                const storedVolumes = JSON.parse(localStorage.getItem("forestvol_volumesByLength") || "{}");
+
+                for (let len of [3, 4, 5, 6]) {
+                    countsByLength[len] = storedCounts[len] || 0;
+                    volumesByLength[len] = storedVolumes[len] || 0;
+                }
+
+                updateLengthTotals();
+
+                updateRowNumbers();
+
+            }
+
+
+            async function exportTableToExcel() {
+                document.getElementById("clickSound").play();
+                try
+                {
+                const table = document.getElementById('volumeBodyTable');
+                const wb = XLSX.utils.book_new();
+                let i = 1;
+
+                const ws_data = [['№ п/п', 'L, m', 'Ø', 'V, куб']];
+                for (let row of table.tBodies[0].rows) {
+                    const rowData = [
+                        i,
+                        row.cells[1].textContent.trim(),
+                        row.cells[2].textContent.trim(),
+                        row.cells[3].textContent.trim()
+                    ];
+                    ws_data.push(rowData);
+                    i++;
+                }
+
+                const totalVolume = document.getElementById('totalVolume').textContent.trim();
+                const totalCount = document.getElementById('totalCount').textContent.trim();
+
+                const volume_6 = document.getElementById("volume_6").textContent.trim();
+                const count_6 = document.getElementById("count_6").textContent.trim();
+                const volume_5 = document.getElementById("volume_5").textContent.trim();
+                const count_5 = document.getElementById("count_5").textContent.trim();
+                const volume_4 = document.getElementById("volume_4").textContent.trim();
+                const count_4 = document.getElementById("count_4").textContent.trim();
+                const volume_3 = document.getElementById("volume_3").textContent.trim();
+                const count_3 = document.getElementById("count_3").textContent.trim();
+
+
+                ws_data.push([]); // Порожній рядок
+                ws_data.push(['6м:', '', count_6, volume_6]);
+                ws_data.push(['5м:', '', count_5, volume_5]);
+                ws_data.push(['4м:', '', count_4, volume_4]);
+                ws_data.push(['3м:', '', count_3, volume_3]);
+                ws_data.push(['Загалом', '', '', '']); // Об'єднаний рядок
+                ws_data.push(['Сумарний об’єм (V, куб):', '', '', totalVolume]);
+                ws_data.push(['Кількість (Шт):', '', '', totalCount]);
+
+                const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+                // Загальний стиль: центр + рамка
+                const commonStyle = {
+                    font: { sz: 14 },
+                    alignment: { horizontal: "center", vertical: "center" },
+                    border: {
+                        top: { style: "thin", color: { rgb: "000000" } },
+                        right: { style: "thin", color: { rgb: "000000" } },
+                        bottom: { style: "thin", color: { rgb: "000000" } },
+                        left: { style: "thin", color: { rgb: "000000" } }
+                    }
+                };
+
+                // Жирний + центр + рамка
+                const boldCenterStyle = {
+                    font: { sz: 14, bold: true },
+                    alignment: commonStyle.alignment,
+                    border: commonStyle.border
+                };
+
+                // Стилізуємо всі клітинки
+                for (let cellAddress in ws) {
+                    if (cellAddress[0] === '!') continue;
+                    ws[cellAddress].s = { ...commonStyle };
+                }
+
+                // Встановлення ширини колонок
+                ws['!cols'] = [
+                    { wch: 10 }, { wch: 18 }, { wch: 18 }, { wch: 15 }
+                ];
+
+                // Об’єднання клітинок
+                const summaryStartRow = ws_data.length - 3;
+                ws['!merges'] = [
+                    { s: { r: summaryStartRow, c: 0 }, e: { r: summaryStartRow, c: 3 } }, // "Загалом"
+                    { s: { r: summaryStartRow + 1, c: 0 }, e: { r: summaryStartRow + 1, c: 2 } }, // Сума
+                    { s: { r: summaryStartRow + 2, c: 0 }, e: { r: summaryStartRow + 2, c: 2 } },  // Кількість
+                    { s: { r: summaryStartRow - 1, c: 0 }, e: { r: summaryStartRow - 1, c: 1 } },  // 3m
+                    { s: { r: summaryStartRow - 2, c: 0 }, e: { r: summaryStartRow - 2, c: 1 } },  //4m
+                    { s: { r: summaryStartRow - 3, c: 0 }, e: { r: summaryStartRow - 3, c: 1 } },  //5m
+                    { s: { r: summaryStartRow - 4, c: 0 }, e: { r: summaryStartRow - 4, c: 1 } }  //6m
+                ];
+
+                // Клітинки, які мають бути жирними
+                const boldCells = ['A1', 'B1', 'C1', 'D1'];
+                        boldCells.forEach(cell => {
+                           if (ws[cell]) ws[cell].s = { ...boldCenterStyle};
+                           });
+
+                for (let r = summaryStartRow - 4; r <= summaryStartRow + 3; r++) {
+                   ['A', 'B', 'C', 'D'].forEach(coll => {
+                      const cell = coll + r;
+                      if (ws[cell]) ws[cell].s = { ...boldCenterStyle};
+                   });
+                };
+
+                XLSX.utils.book_append_sheet(wb, ws, "Таблиця");
+                await saveExcelOnAndroid(wb);
+                }
+                catch (e) {
+                        alert(
+                    "Помилка:\n\n" +
+                    e.message +
+                    "\n\nStack:\n" +
+                    e.stack);
+                    console.error(e);
+                }
+            }
+
+
+            // Прив'язка кнопки
+            document.getElementById('exportExcelBtn').addEventListener('click', exportTableToExcel);
+
+            document.getElementById("clearStorageBtn").addEventListener("click", function () {
+                if (confirm("Очистити всі дані таблиці?")) {
+                    localStorage.removeItem("forestvol_table");
+                    localStorage.removeItem("forestvol_totalVolume");
+                    localStorage.removeItem("forestvol_totalCount");
+                    localStorage.removeItem("forestvol_countsByLength");
+                    localStorage.removeItem("forestvol_volumesByLength");
+
+                    // Очистити вміст таблиці
+                    const tableBody = document.querySelector("#volumeBodyTable tbody");
+                    tableBody.innerHTML = "";
+
+                    // Скинути лічильники та об’єми по довжинах
+                    for (let len of [3, 4, 5, 6]) {
+                        countsByLength[len] = 0;
+                        volumesByLength[len] = 0;
+                    }
+
+                    // Оновити підсумки
+                    document.getElementById("totalVolume").textContent = "0.000";
+                    document.getElementById("totalCount").textContent = "0";
+
+                    // Оновити значення внизу таблиці
+                    updateLengthTotals();
+
+                    document.getElementById("BacketSound").play();
+                }
+            });
+
+
+            loadFromLocalStorage();
+
+            function updateLengthTotals() {
+                for (let len of [3, 4, 5, 6]) {
+                    const countSpan = document.getElementById(`count_${len}`);
+                    const volumeSpan = document.getElementById(`volume_${len}`);
+
+                    if (countSpan) countSpan.textContent = countsByLength[len];
+                    if (volumeSpan) volumeSpan.textContent = volumesByLength[len].toFixed(3);
+                }
+            }
+
+            let isShown = false;
+            window.toggleLengthSummary = function () {
+                const rows = ['row_6', 'row_5', 'row_4', 'row_3'];
+                rows.forEach(id => {
+                    const row = document.getElementById(id);
+                    row.style.display = isShown ? 'none' : '';
+                });
+
+                const btn = document.getElementById('toggleLengthBtn');
+                btn.textContent = isShown ? 'По довжинах' : 'Сховати';
+                isShown = !isShown;
+            };
+
+
+        });
+    </script>
+    <!-- У кінці body -->
+    <audio id="clickSound" src="Sounds/click.mp3"></audio>
+    <audio id="deleteSound" src="Sounds/delete.mp3"></audio>
+    <audio id="tapSound" src="Sounds/tap.mp3"></audio>
+    <audio id="tikSound" src="Sounds/tik.mp3"></audio>
+    <audio id="BacketSound" src="Sounds/Backet.mp3"></audio>
+
+</body>
+</html>

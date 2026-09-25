@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ForestVolume</string>
+    <string name="title_activity_main">ForestVolume</string>
+    <string name="package_name">ua.pp.forestvol</string>
+    <string name="custom_url_scheme">ua.pp.forestvol</string>
+</resources>
