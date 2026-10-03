@@ -353,6 +353,11 @@
                             <td><span id="volume_3">0</span></td>
                             <td><span class="lbl-sht">Шт:</span> <span id="count_3">0</span></td>
                         </tr>
+                        <tr id="row_2" style="display: none;">
+                            <td colspan="2" class="row-label">2m:</td>
+                            <td><span id="volume_2">0</span></td>
+                            <td><span class="lbl-sht">Шт:</span> <span id="count_2">0</span></td>
+                        </tr>
                     </tfoot>
                 </table>
                 <button id="toggleLengthBtn" onclick="toggleLengthSummary()">По довжинах</button>
@@ -418,6 +423,9 @@
                                 toast_no_plugins: 'Плагіни Filesystem/Share не підключені.',
                                 toast_save_error: 'Помилка збереження файлу: ',
                                 share_title: 'Кубатура лісу', share_text: 'Таблиця обмірів', share_dialog_title: 'Поділитися файлом Excel',
+                                lang_short: 'UA',
+                                share_title: 'Кубатура лісу', share_text: 'Таблиця обмірів', share_dialog_title: 'Поділитися файлом Excel',
+                                xls_total: 'Загалом', xls_sum_volume: 'Сумарний об’єм (V, куб):', xls_count: 'Кількість (Шт):',
                                 lang_short: 'UA'
                             },
                             en: {
@@ -432,6 +440,8 @@
                                 toast_no_plugins: 'Filesystem/Share plugins are not connected.',
                                 toast_save_error: 'Error saving file: ',
                                 share_title: 'Timber volume', share_text: 'Measurement table', share_dialog_title: 'Share Excel file',
+                                lang_short: 'EN',share_title: 'Timber volume', share_text: 'Measurement table', share_dialog_title: 'Share Excel file',
+                                xls_total: 'Total', xls_sum_volume: 'Total volume (V, m³):', xls_count: 'Quantity (Pcs):',
                                 lang_short: 'EN'
                             },
                             pl: {
@@ -446,6 +456,8 @@
                                 toast_no_plugins: 'Wtyczki Filesystem/Share nie są podłączone.',
                                 toast_save_error: 'Błąd zapisu pliku: ',
                                 share_title: 'Kubatura drewna', share_text: 'Tabela pomiarów', share_dialog_title: 'Udostępnij plik Excel',
+                                lang_short: 'PL',share_title: 'Kubatura drewna', share_text: 'Tabela pomiarów', share_dialog_title: 'Udostępnij plik Excel',
+                                xls_total: 'Razem', xls_sum_volume: 'Łączna kubatura (V, m³):', xls_count: 'Ilość (Szt):',
                                 lang_short: 'PL'
                             },
                             de: {
@@ -460,6 +472,8 @@
                                 toast_no_plugins: 'Filesystem/Share-Plugins sind nicht verbunden.',
                                 toast_save_error: 'Fehler beim Speichern der Datei: ',
                                 share_title: 'Holzvolumen', share_text: 'Messtabelle', share_dialog_title: 'Excel-Datei teilen',
+                                lang_short: 'DE',share_title: 'Holzvolumen', share_text: 'Messtabelle', share_dialog_title: 'Excel-Datei teilen',
+                                xls_total: 'Insgesamt', xls_sum_volume: 'Gesamtvolumen (V, m³):', xls_count: 'Menge (Stk):',
                                 lang_short: 'DE'
                             }
                         };
@@ -470,55 +484,55 @@
                         }
 
                         const volumeLookup = {
-                            "3-16": 0.069, "4-16": 0.095, "5-16": 0.124, "6-16": 0.155,
-                            "3-17": 0.077, "4-17": 0.1075, "5-17": 0.14, "6-17": 0.1745,
-                            "3-18": 0.086, "4-18": 0.12, "5-18": 0.156, "6-18": 0.194,
-                            "3-19": 0.097, "4-19": 0.1335, "5-19": 0.173, "6-19": 0.212,
-                            "3-20": 0.107, "4-20": 0.147, "5-20": 0.19, "6-20": 0.23,
-                            "3-21": 0.119, "4-21": 0.1625, "5-21": 0.21, "6-21": 0.255,
-                            "3-22": 0.13, "4-22": 0.178, "5-22": 0.23, "6-22": 0.28,
-                            "3-23": 0.144, "4-23": 0.194, "5-23": 0.25, "6-23": 0.305,
-                            "3-24": 0.157, "4-24": 0.21, "5-24": 0.27, "6-24": 0.33,
-                            "3-25": 0.171, "4-25": 0.23, "5-25": 0.295, "6-25": 0.36,
-                            "3-26": 0.185, "4-26": 0.25, "5-26": 0.32, "6-26": 0.39,
-                            "3-27": 0.203, "4-27": 0.27, "5-27": 0.345, "6-27": 0.42,
-                            "3-28": 0.22, "4-28": 0.29, "5-28": 0.37, "6-28": 0.45,
-                            "3-29": 0.235, "4-29": 0.31, "5-29": 0.395, "6-29": 0.485,
-                            "3-30": 0.25, "4-30": 0.33, "5-30": 0.42, "6-30": 0.52,
-                            "3-31": 0.265, "4-31": 0.355, "5-31": 0.45, "6-31": 0.555,
-                            "3-32": 0.28, "4-32": 0.38, "5-32": 0.48, "6-32": 0.59,
-                            "3-33": 0.3, "4-33": 0.405, "5-33": 0.51, "6-33": 0.625,
-                            "3-34": 0.32, "4-34": 0.43, "5-34": 0.54, "6-34": 0.66,
-                            "3-35": 0.34, "4-35": 0.455, "5-35": 0.57, "6-35": 0.7,
-                            "3-36": 0.36, "4-36": 0.48, "5-36": 0.6, "6-36": 0.74,
-                            "3-37": 0.375, "4-37": 0.505, "5-37": 0.635, "6-37": 0.78,
-                            "3-38": 0.39, "4-38": 0.53, "5-38": 0.67, "6-38": 0.82,
-                            "3-39": 0.41, "4-39": 0.555, "5-39": 0.705, "6-39": 0.86,
-                            "3-40": 0.43, "4-40": 0.58, "5-40": 0.74, "6-40": 0.9,
-                            "3-41": 0.45, "4-41": 0.61, "5-41": 0.775, "6-41": 0.95,
-                            "3-42": 0.47, "4-42": 0.64, "5-42": 0.81, "6-42": 1.0,
-                            "3-43": 0.495, "4-43": 0.67, "5-43": 0.85, "6-43": 1.045,
-                            "3-44": 0.515, "4-44": 0.7, "5-44": 0.89, "6-44": 1.09,
-                            "3-45": 0.543, "4-45": 0.735, "5-45": 0.935, "6-45": 1.14,
-                            "3-46": 0.57, "4-46": 0.77, "5-46": 0.98, "6-46": 1.19,
-                            "3-47": 0.595, "4-47": 0.805, "5-47": 1.02, "6-47": 1.245,
-                            "3-48": 0.62, "4-48": 0.84, "5-48": 1.06, "6-48": 1.3,
-                            "3-49": 0.645, "4-49": 0.875, "5-49": 1.105, "6-49": 1.355,
-                            "3-50": 0.67, "4-50": 0.91, "5-50": 1.15, "6-50": 1.41,
-                            "3-51": 0.7, "4-51": 0.95, "5-51": 1.2, "6-51": 1.47,
-                            "3-52": 0.73, "4-52": 0.99, "5-52": 1.25, "6-52": 1.53,
-                            "3-53": 0.765, "4-53": 1.03, "5-53": 1.3, "6-53": 1.59,
-                            "3-54": 0.8, "4-54": 1.07, "5-54": 1.35, "6-54": 1.65,
-                            "3-55": 0.83, "4-55": 1.115, "5-55": 1.405, "6-55": 1.715,
-                            "3-56": 0.86, "4-56": 1.16, "5-56": 1.46, "6-56": 1.78,
-                            "3-57": 0.89, "4-57": 1.205, "5-57": 1.515, "6-57": 1.845,
-                            "3-58": 0.92, "4-58": 1.25, "5-58": 1.57, "6-58": 1.91,
-                            "3-59": 0.955, "4-59": 1.29, "5-59": 1.625, "6-59": 1.98,
-                            "3-60": 0.99, "4-60": 1.33, "5-60": 1.68, "6-60": 2.05
+                           "2-16": 0.044, "3-16": 0.069, "4-16": 0.095, "5-16": 0.124, "6-16": 0.155,
+                           "2-17": 0.050, "3-17": 0.077, "4-17": 0.1075, "5-17": 0.14, "6-17": 0.1745,
+                           "2-18": 0.056, "3-18": 0.086, "4-18": 0.12, "5-18": 0.156, "6-18": 0.194,
+                           "2-19": 0.063, "3-19": 0.097, "4-19": 0.1335, "5-19": 0.173, "6-19": 0.212,
+                           "2-20": 0.069, "3-20": 0.107, "4-20": 0.147, "5-20": 0.19, "6-20": 0.23,
+                           "2-21": 0.077, "3-21": 0.119, "4-21": 0.1625, "5-21": 0.21, "6-21": 0.255,
+                           "2-22": 0.084, "3-22": 0.13, "4-22": 0.178, "5-22": 0.23, "6-22": 0.28,
+                           "2-23": 0.094, "3-23": 0.144, "4-23": 0.194, "5-23": 0.25, "6-23": 0.305,
+                           "2-24": 0.103, "3-24": 0.157, "4-24": 0.21, "5-24": 0.27, "6-24": 0.33,
+                           "2-25": 0.113, "3-25": 0.171, "4-25": 0.23, "5-25": 0.295, "6-25": 0.36,
+                           "2-26": 0.123, "3-26": 0.185, "4-26": 0.25, "5-26": 0.32, "6-26": 0.39,
+                           "2-27": 0.134, "3-27": 0.203, "4-27": 0.27, "5-27": 0.345, "6-27": 0.42,
+                           "2-28": 0.144, "3-28": 0.22, "4-28": 0.29, "5-28": 0.37, "6-28": 0.45,
+                           "2-29": 0.155, "3-29": 0.235, "4-29": 0.31, "5-29": 0.395, "6-29": 0.485,
+                           "2-30": 0.165, "3-30": 0.25, "4-30": 0.33, "5-30": 0.42, "6-30": 0.52,
+                           "2-31": 0.178, "3-31": 0.265, "4-31": 0.355, "5-31": 0.45, "6-31": 0.555,
+                           "2-32": 0.190, "3-32": 0.28, "4-32": 0.38, "5-32": 0.48, "6-32": 0.59,
+                           "2-33": 0.200, "3-33": 0.3, "4-33": 0.405, "5-33": 0.51, "6-33": 0.625,
+                           "2-34": 0.210, "3-34": 0.32, "4-34": 0.43, "5-34": 0.54, "6-34": 0.66,
+                           "2-35": 0.220, "3-35": 0.34, "4-35": 0.455, "5-35": 0.57, "6-35": 0.7,
+                           "2-36": 0.230, "3-36": 0.36, "4-36": 0.48, "5-36": 0.6, "6-36": 0.74,
+                           "2-37": 0.245, "3-37": 0.375, "4-37": 0.505, "5-37": 0.635, "6-37": 0.78,
+                           "2-38": 0.260, "3-38": 0.39, "4-38": 0.53, "5-38": 0.67, "6-38": 0.82,
+                           "2-39": 0.270, "3-39": 0.41, "4-39": 0.555, "5-39": 0.705, "6-39": 0.86,
+                           "2-40": 0.280, "3-40": 0.43, "4-40": 0.58, "5-40": 0.74, "6-40": 0.9,
+                           "2-41": 0.295, "3-41": 0.45, "4-41": 0.61, "5-41": 0.775, "6-41": 0.95,
+                           "2-42": 0.310, "3-42": 0.47, "4-42": 0.64, "5-42": 0.81, "6-42": 1.0,
+                           "2-43": 0.325, "3-43": 0.495, "4-43": 0.67, "5-43": 0.85, "6-43": 1.045,
+                           "2-44": 0.340, "3-44": 0.515, "4-44": 0.7, "5-44": 0.89, "6-44": 1.09,
+                           "2-45": 0.355, "3-45": 0.543, "4-45": 0.735, "5-45": 0.935, "6-45": 1.14,
+                           "2-46": 0.370, "3-46": 0.57, "4-46": 0.77, "5-46": 0.98, "6-46": 1.19,
+                           "2-47": 0.390, "3-47": 0.595, "4-47": 0.805, "5-47": 1.02, "6-47": 1.245,
+                           "2-48": 0.410, "3-48": 0.62, "4-48": 0.84, "5-48": 1.06, "6-48": 1.3,
+                           "2-49": 0.425, "3-49": 0.645, "4-49": 0.875, "5-49": 1.105, "6-49": 1.355,
+                           "2-50": 0.440, "3-50": 0.67, "4-50": 0.91, "5-50": 1.15, "6-50": 1.41,
+                           "2-51": 0.460, "3-51": 0.7, "4-51": 0.95, "5-51": 1.2, "6-51": 1.47,
+                           "2-52": 0.480, "3-52": 0.73, "4-52": 0.99, "5-52": 1.25, "6-52": 1.53,
+                           "2-53": 0.505, "3-53": 0.765, "4-53": 1.03, "5-53": 1.3, "6-53": 1.59,
+                           "2-54": 0.530, "3-54": 0.8, "4-54": 1.07, "5-54": 1.35, "6-54": 1.65,
+                           "2-55": 0.550, "3-55": 0.83, "4-55": 1.115, "5-55": 1.405, "6-55": 1.715,
+                           "2-56": 0.570, "3-56": 0.86, "4-56": 1.16, "5-56": 1.46, "6-56": 1.78,
+                           "2-57": 0.590, "3-57": 0.89, "4-57": 1.205, "5-57": 1.515, "6-57": 1.845,
+                           "2-58": 0.610, "3-58": 0.92, "4-58": 1.25, "5-58": 1.57, "6-58": 1.91,
+                           "2-59": 0.635, "3-59": 0.955, "4-59": 1.29, "5-59": 1.625, "6-59": 1.98,
+                           "2-60": 0.660, "3-60": 0.99, "4-60": 1.33, "5-60": 1.68, "6-60": 2.05
                         };
 
-                        const countsByLength = { 3: 0, 4: 0, 5: 0, 6: 0 };
-                        const volumesByLength = { 3: 0, 4: 0, 5: 0, 6: 0 };
+                        const countsByLength = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
+                        const volumesByLength = { 2: 0, 3: 0, 4: 0, 5: 0, 6: 0 };
 
                         function showToast(message, duration = 3000) {
                             const toast = document.getElementById('toast');
@@ -635,7 +649,7 @@
                             let selectedDiameter = "16";
                             let count = 0;
 
-                            setupCustomSelect('length-custom', ["3", "4", "5", "6"], selectedLength, (val) => {
+                            setupCustomSelect('length-custom', ["2", "3", "4", "5", "6"], selectedLength, (val) => {
                                 selectedLength = val;
                                 document.getElementById("tikSound").play();
                             });
@@ -673,7 +687,8 @@
                                         newRow.classList.remove("highlighted-row");
                                     }, 5000);
 
-                                    if (selectedLength == 3) newRow.classList.add("length-3");
+                                    if (selectedLength == 2) newRow.classList.add("length-2");
+                                    else if (selectedLength == 3) newRow.classList.add("length-3");
                                     else if (selectedLength == 4) newRow.classList.add("length-4");
                                     else if (selectedLength == 5) newRow.classList.add("length-5");
                                     else if (selectedLength == 6) newRow.classList.add("length-6");
@@ -695,7 +710,7 @@
                                     document.querySelector('.scrollable-body').scrollTop =
                                         document.querySelector('.scrollable-body').scrollHeight;
 
-                                    document.getElementById("clickSound_1").play();
+                                    document.getElementById("clickSound").play();
                                 } else {
                                     alert(t('alert_not_found'));
                                 }
@@ -784,7 +799,7 @@
                                 const storedCounts = JSON.parse(localStorage.getItem("forestvol_countsByLength") || "{}");
                                 const storedVolumes = JSON.parse(localStorage.getItem("forestvol_volumesByLength") || "{}");
 
-                                for (let len of [3, 4, 5, 6]) {
+                                for (let len of [2, 3, 4, 5, 6]) {
                                     countsByLength[len] = storedCounts[len] || 0;
                                     volumesByLength[len] = storedVolumes[len] || 0;
                                 }
@@ -819,15 +834,18 @@
                                 const count_4 = document.getElementById("count_4").textContent.trim();
                                 const volume_3 = document.getElementById("volume_3").textContent.trim();
                                 const count_3 = document.getElementById("count_3").textContent.trim();
+                                const volume_2 = document.getElementById("volume_2").textContent.trim();
+                                const count_2 = document.getElementById("count_2").textContent.trim();
 
                                 ws_data.push([]);
                                 ws_data.push(['6м:', '', count_6, volume_6]);
                                 ws_data.push(['5м:', '', count_5, volume_5]);
                                 ws_data.push(['4м:', '', count_4, volume_4]);
                                 ws_data.push(['3м:', '', count_3, volume_3]);
-                                ws_data.push(['Загалом', '', '', '']);
-                                ws_data.push(['Сумарний об’єм (V, куб):', '', '', totalVolume]);
-                                ws_data.push(['Кількість (Шт):', '', '', totalCount]);
+                                ws_data.push(['2м:', '', count_2, volume_2]);
+                                ws_data.push([t('xls_total'), '', '', '']);
+                                ws_data.push([t('xls_sum_volume'), '', '', totalVolume]);
+                                ws_data.push([t('xls_count'), '', '', totalCount]);
 
                                 const ws = XLSX.utils.aoa_to_sheet(ws_data);
 
@@ -863,7 +881,9 @@
                                     { s: { r: summaryStartRow - 1, c: 0 }, e: { r: summaryStartRow - 1, c: 1 } },
                                     { s: { r: summaryStartRow - 2, c: 0 }, e: { r: summaryStartRow - 2, c: 1 } },
                                     { s: { r: summaryStartRow - 3, c: 0 }, e: { r: summaryStartRow - 3, c: 1 } },
-                                    { s: { r: summaryStartRow - 4, c: 0 }, e: { r: summaryStartRow - 4, c: 1 } }
+                                    { s: { r: summaryStartRow - 4, c: 0 }, e: { r: summaryStartRow - 4, c: 1 } },
+                                    { s: { r: summaryStartRow - 5, c: 0 }, e: { r: summaryStartRow - 5, c: 1 } }
+
                                 ];
 
                                 const boldCells = [
@@ -873,10 +893,10 @@
                                     'A' + (summaryStartRow + 3), 'D' + (summaryStartRow + 3)
                                 ];
 
-                                ['A' + (summaryStartRow - 4), 'A' + (summaryStartRow - 3), 'A' + (summaryStartRow - 2), 'A' + (summaryStartRow - 1), 'A' + (summaryStartRow),
-                                'B' + (summaryStartRow - 4), 'B' + (summaryStartRow - 3), 'B' + (summaryStartRow - 2), 'B' + (summaryStartRow - 1), 'B' + (summaryStartRow),
-                                'C' + (summaryStartRow - 4), 'C' + (summaryStartRow - 3), 'C' + (summaryStartRow - 2), 'C' + (summaryStartRow - 1), 'C' + (summaryStartRow),
-                                'D' + (summaryStartRow - 4), 'D' + (summaryStartRow - 3), 'D' + (summaryStartRow - 2), 'D' + (summaryStartRow - 1), 'D' + (summaryStartRow)]
+                                ['A' + (summaryStartRow - 5), 'A' + (summaryStartRow - 4), 'A' + (summaryStartRow - 3), 'A' + (summaryStartRow - 2), 'A' + (summaryStartRow - 1), 'A' + (summaryStartRow),
+                                'B' + (summaryStartRow - 5), 'B' + (summaryStartRow - 4), 'B' + (summaryStartRow - 3), 'B' + (summaryStartRow - 2), 'B' + (summaryStartRow - 1), 'B' + (summaryStartRow),
+                                'C' + (summaryStartRow - 5), 'C' + (summaryStartRow - 4), 'C' + (summaryStartRow - 3), 'C' + (summaryStartRow - 2), 'C' + (summaryStartRow - 1), 'C' + (summaryStartRow),
+                                'D' + (summaryStartRow - 5), 'D' + (summaryStartRow - 4), 'D' + (summaryStartRow - 3), 'D' + (summaryStartRow - 2), 'D' + (summaryStartRow - 1), 'D' + (summaryStartRow)]
                                     .forEach(cell => { if (ws[cell]) ws[cell].s = { ...boldCenterStyle }; });
 
                                 boldCells.forEach(cell => { if (ws[cell]) ws[cell].s = { ...boldCenterStyle }; });
@@ -886,6 +906,7 @@
                             }
 
                             async function exportTableToExcel() {
+                                document.getElementById("tapSound").play();
                                 const wb = buildWorkbook();
                                 const fileName = "forestvol_table.xlsx";
 
@@ -917,14 +938,13 @@
                                             dialogTitle: t('share_dialog_title')
                                         });
 
-                                        document.getElementById("tapSound").play();
+                                       
                                     } catch (err) {
                                         console.error(err);
                                         showToast(t('toast_save_error') + err.message);
                                     }
                                 } else {
                                     XLSX.writeFile(wb, fileName);
-                                    document.getElementById("tapSound").play();
                                 }
                             }
 
@@ -941,7 +961,7 @@
                                     const tableBody = document.querySelector("#volumeBodyTable tbody");
                                     tableBody.innerHTML = "";
 
-                                    for (let len of [3, 4, 5, 6]) {
+                                    for (let len of [2, 3, 4, 5, 6]) {
                                         countsByLength[len] = 0;
                                         volumesByLength[len] = 0;
                                     }
@@ -958,7 +978,7 @@
                             loadFromLocalStorage();
 
                             function updateLengthTotals() {
-                                for (let len of [3, 4, 5, 6]) {
+                                for (let len of [2, 3, 4, 5, 6]) {
                                     const countSpan = document.getElementById(`count_${len}`);
                                     const volumeSpan = document.getElementById(`volume_${len}`);
                                     if (countSpan) countSpan.textContent = countsByLength[len];
@@ -967,7 +987,7 @@
                             }
 
                             window.toggleLengthSummary = function () {
-                                const rows = ['row_6', 'row_5', 'row_4', 'row_3'];
+                                const rows = ['row_6', 'row_5', 'row_4', 'row_3', 'row_2'];
                                 rows.forEach(id => {
                                     const row = document.getElementById(id);
                                     row.style.display = isShown ? 'none' : '';
